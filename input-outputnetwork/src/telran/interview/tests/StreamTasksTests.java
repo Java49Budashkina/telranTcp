@@ -26,4 +26,9 @@ class StreamTasksTests {
 		
 		displayStatisticNumbers(100);
 	}
+	
+	@Test
+	void PersonsMapTest() {
+	System.out.println(	getRandomRersons(10));
+	}
 }

@@ -1,13 +1,18 @@
 package telran.interview;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-
+record Person(Integer id, String name) {}
 
 public class StreamTasks {
+	
+	
+	
 	static public void displayOccurences(String strings[]) {
 		Arrays.stream(strings).collect(Collectors.groupingBy(s->s, Collectors.counting()))
 		.entrySet().stream().sorted((e1, e2) -> {
@@ -46,4 +51,16 @@ public class StreamTasks {
 			.entrySet().stream().sorted((e1, e2) -> Long.compare(e1.getKey(),  e2.getKey()))
 			.forEach(e -> System.out.printf("%c : %s \n", e.getKey(), e.getValue()));
 	}
+	
+	 public static Map<Integer, Person> getRandomRersons(int numPersons){
+		 return new Random().ints(1000, 2001).distinct()
+				 .limit(numPersons)
+				.mapToObj(id -> new Person(id, "name" + id))
+		//		.collect(Collectors.toMap(p -> p.id(), p  -> p));
+		 .collect(Collectors.toMap(p -> p.id(), p  -> p, (p,u) -> p, TreeMap::new));
+		 
+		
+	}
 }
+
+
