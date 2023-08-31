@@ -31,11 +31,11 @@ public class StreamTasks {
 	}
 	
 	static public void displayStatisticNumbers(int nNumbers) {
-		new Random().ints(nNumbers, 0,Integer.MAX_VALUE)
+		new Random().ints(nNumbers, 0,10000)
 			.mapToObj(Integer::toString)
 			.flatMap(s -> Arrays.stream(s.split("")))
 			.collect(Collectors.groupingBy(s -> s, Collectors.counting()))
-			.entrySet().stream().sorted((e1, e2) -> Long.compare(e1.getValue(),  e2.getValue()))
+			.entrySet().stream().sorted((e1, e2) -> Long.compare(e2.getValue(),  e1.getValue()))
 			.forEach(e -> System.out.printf("%s : %s \n", e.getKey(), e.getValue()));
 	}
 	
