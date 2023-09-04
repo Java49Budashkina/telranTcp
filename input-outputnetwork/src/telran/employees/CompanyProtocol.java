@@ -3,7 +3,7 @@ package telran.employees;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import telran.employees.controller.CompanyController;
+
 import telran.employees.dto.*;
 
 import telran.employees.service.Company;
@@ -11,7 +11,6 @@ import telran.net.ApplProtocol;
 import telran.net.Request;
 import telran.net.Response;
 import telran.net.ResponseCode;
-import telran.view.Item;
 
 public class CompanyProtocol implements ApplProtocol {
 
@@ -55,9 +54,9 @@ public class CompanyProtocol implements ApplProtocol {
 
 	 private Serializable salary_update(Serializable data) {
 		 @SuppressWarnings("unchecked")
-			UpdateData<String> updateData = (UpdateData<String>) data;
+			UpdateData<Integer> updateData = (UpdateData<Integer>) data;
 			long id = updateData.id();
-			int salary = Integer.parseInt(updateData.data());
+			int salary = updateData.data();
 		return company.updateSalary(id, salary);
 	}
 

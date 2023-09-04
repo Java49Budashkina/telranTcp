@@ -22,7 +22,8 @@ public TcpServer(int port, ApplProtocol prot) throws IOException {
 			while(true){
 				Socket socket = srvSocket.accept();
 				TcpClientServer clientSrv = new TcpClientServer(socket, protocol);
-				clientSrv.run();
+				Thread thread = new Thread(clientSrv);
+				thread.start();
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
