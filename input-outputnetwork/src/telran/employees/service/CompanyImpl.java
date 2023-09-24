@@ -15,17 +15,30 @@ public class CompanyImpl implements Company {
 	TreeMap<Integer, Collection<Employee>> employeesSalary = new TreeMap<>();
 	TreeMap<LocalDate, Collection<Employee>> employeesAge = new TreeMap<>();
 	HashMap<String, Collection<Employee>> employeesDepartment = new HashMap<>();
-
+	Monitor monitor;
+	
+	public CompanyImpl(Monitor monitor){
+		this.monitor = monitor;
+	}
+	
 	@Override
 	public boolean addEmployee(Employee empl) {
 		boolean res = false;
 		Employee emplRes = employees.putIfAbsent(empl.id(), empl);
-		if (emplRes == null) {
-			res = true;
-			addEmployeeSalary(empl);
-			addEmployeeAge(empl);
-			addEmployeeDepartment(empl);
+		try {
+			if (emplRes == null) {
+				monitor.write_lock.lock();
+				res = true;
+				addEmployeeSalary(empl);
+				addEmployeeAge(empl);
+				addEmployeeDepartment(empl);
+			}
 		}
+		finally {
+			monitor.write_lock.unlock();
+		}
+		
+		
 		return res;
 	}
 
@@ -59,10 +72,16 @@ public class CompanyImpl implements Company {
 	@Override
 	public Employee removeEmployee(long id) {
 		Employee res = employees.remove(id);
-		if (res != null) {
-			removeEmployeeSalary(res);
-			removeEmployeeAge(res);
-			removeEmployeeDepartment(res);
+		try {
+			if (res != null) {
+				monitor.write_lock.lock()
+				removeEmployeeSalary(res);
+				removeEmployeeAge(res);
+				removeEmployeeDepartment(res);
+			}
+		}
+		finally {
+			monitor.write_lock.unlock()
 		}
 		return res;
 	}
@@ -87,8 +106,12 @@ public class CompanyImpl implements Company {
 
 	@Override
 	public Employee getEmployee(long id) {
-
-		return employees.get(id);
+		try { monitor.read_lock.lock()  //??????
+		  return employees.get(id);
+		}
+		finally {
+			monitor.read_lock.unlock()
+		}
 	}
 
 	@Override
@@ -148,10 +171,17 @@ public class CompanyImpl implements Company {
 	public Employee updateSalary(long id, int newSalary) {
 		Employee empl = removeEmployee(id);
 		if(empl != null) {
-			Employee newEmployee = new Employee(id, empl.name(),
+			try {	
+				monitor.write_lock.lock();
+				Employee newEmployee = new Employee(id, empl.name(),
 					empl.department(), newSalary, empl.birthDate());
-			addEmployee(newEmployee);
+				addEmployee(newEmployee);
+			}
+			finally {
+				monitor.write_lock.unlock();
+			}
 		}
+		
 		return empl;
 	}
 
@@ -159,9 +189,16 @@ public class CompanyImpl implements Company {
 	public Employee updateDepartment(long id, String newDepartment) {
 		Employee empl = removeEmployee(id);
 		if(empl != null) {
-			Employee newEmployee = new Employee(id, empl.name(),
+			try {	
+				monitor.write_lock.lock();
+				Employee newEmployee = new Employee(id, empl.name(),
 					newDepartment, empl.salary(), empl.birthDate());
-			addEmployee(newEmployee);
+				addEmployee(newEmployee);
+			
+			}
+			finally {
+				monitor.write_lock.unlock();
+		}
 		}
 		return empl;
 	}

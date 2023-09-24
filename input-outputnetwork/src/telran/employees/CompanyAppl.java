@@ -1,6 +1,8 @@
 package telran.employees;
 
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 
 import telran.employees.controller.CompanyController;
 import telran.employees.service.*;
@@ -13,7 +15,9 @@ public class CompanyAppl {
 
 	public static void main(String[] args) {
 		fileName = args.length > 0 ? args[0] : DEFAULT_FILE_NAME;
-		Company company = new CompanyImpl();
+		ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+		Monitor monitor = new Monitor(rwLock.readLock(), rwLock.writeLock());
+		Company company = new CompanyImpl(monitor);
 		company.restore(fileName );
 		ArrayList<Item> companyItems = CompanyController.getCompanyItems(company);
 		companyItems.add(Item.of("Exit & Save", io -> company.save(fileName), true));
