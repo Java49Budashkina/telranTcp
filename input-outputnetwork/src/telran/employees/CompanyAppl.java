@@ -10,7 +10,7 @@ import telran.view.*;
 
 public class CompanyAppl {
 	
-	private static final String DEFAULT_FILE_NAME = "employees.data";
+	private static final String DEFAULT_FILE_NAME = "employees.data";   
 	private static String fileName ;
 
 	public static void main(String[] args) {

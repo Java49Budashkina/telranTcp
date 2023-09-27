@@ -15,7 +15,7 @@ public class CompanyServerAppl {
 	public static void main(String[] args) throws IOException {
 		fileName = args.length > 0 ? args[0] : DEFAULT_FILE_NAME;
 		ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
-		Monitor monitor = new Monitor(rwLock.readLock(), rwLock.writeLock());
+		Monitor monitor = new Monitor(rwLock.readLock(), rwLock.writeLock());   
 		Company company = new CompanyImpl(monitor);
 		
 		company.restore(fileName );
